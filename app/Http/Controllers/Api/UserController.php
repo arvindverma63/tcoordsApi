@@ -29,7 +29,7 @@ class UserController extends Controller
      * @OA\Post(
      *     path="/api/register",
      *     summary="Register a new user",
-     *     tags={"Register"},
+     *     tags={"Auth"},
      *     @OA\RequestBody(
      *         required=true,
      *         description="User registration data",
@@ -97,6 +97,57 @@ class UserController extends Controller
                 'error' => 'Internal server error',
                 'message' => $e->getMessage()
             ], 500);
+        }
+    }
+    /**
+     * @OA\Get(
+     *     path="/api/getUser/{id}",
+     *     summary="Retrieve user by LinkedIn ID",
+     *     description="This endpoint retrieves a user by their LinkedIn ID. If found, it returns a JWT token for authentication.",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="The LinkedIn ID of the user",
+     *         @OA\Schema(type="string", example="linkedin_12345")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User found and token generated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Internal server error"),
+     *             @OA\Property(property="message", type="string", example="Database error")
+     *         )
+     *     )
+     * )
+     */
+    public function getUser($id)
+    {
+        $data = User::where('linkedin_id', $id)->first();
+        if ($data) {
+            $token = JWTAuth::fromUser($data);
+            return response()->json([
+                'token' => $token,
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'User not found',
+            ], 404);
         }
     }
 }

@@ -8,7 +8,7 @@
         "/api/register": {
             "post": {
                 "tags": [
-                    "Register"
+                    "Auth"
                 ],
                 "summary": "Register a new user",
                 "operationId": "482fd8cbb98dc3225fa0e7ac40c1abe6",
@@ -96,6 +96,82 @@
                     }
                 }
             }
+        },
+        "/api/getUser/{id}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Retrieve user by LinkedIn ID",
+                "description": "This endpoint retrieves a user by their LinkedIn ID. If found, it returns a JWT token for authentication.",
+                "operationId": "07bd7d0fc4dfc1459e5d782bbbba9f66",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The LinkedIn ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "linkedin_12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User found and token generated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Internal server error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Database error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -109,8 +185,8 @@
     },
     "tags": [
         {
-            "name": "Register",
-            "description": "Register"
+            "name": "Auth",
+            "description": "Auth"
         }
     ]
 }
