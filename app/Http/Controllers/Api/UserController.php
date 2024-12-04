@@ -70,7 +70,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'linkedin_id' => 'nullable|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Added avatar validation
+            'avatar' => 'nullable',  // Added avatar validation
         ]);
 
         // If validation fails, return validation errors
@@ -79,11 +79,7 @@ class UserController extends Controller
         }
 
         try {
-            // If avatar is provided, handle file upload
-            $avatarPath = null;
-            if ($request->hasFile('avatar')) {
-                $avatarPath = $request->file('avatar')->store('avatars', 'public');  // Save the avatar in the 'public/avatars' directory
-            }
+
 
             // Create a new user
             $user = User::create([
@@ -91,7 +87,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'linkedin_id' => $request->linkedin_id,
-                'avatar' => $avatarPath,  // Save avatar path or URL
+                'avatar' => $request->avatar,  // Save avatar path or URL
             ]);
 
             // Generate JWT token after user registration
