@@ -38,7 +38,8 @@ class UserController extends Controller
      *             @OA\Property(property="name", type="string", example="John Doe"),
      *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
      *             @OA\Property(property="password", type="string", format="password", example="password123"),
-     *             @OA\Property(property="linkedin_id", type="string", example="linkedin-profile-id")
+     *             @OA\Property(property="linkedin_id", type="string", example="linkedin-profile-id"),
+     *             @OA\Property(property="avatar", type="string", format="uri", example="http://example.com/path-to-avatar.jpg")
      *         )
      *     ),
      *     @OA\Response(
@@ -46,7 +47,8 @@ class UserController extends Controller
      *         description="User registered successfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="name", type="string", example="John Doe"),
-     *             @OA\Property(property="email", type="string", example="john@example.com")
+     *             @OA\Property(property="email", type="string", example="john@example.com"),
+     *             @OA\Property(property="avatar", type="string", example="http://example.com/path-to-avatar.jpg")
      *         )
      *     ),
      *     @OA\Response(
@@ -59,14 +61,16 @@ class UserController extends Controller
      *     )
      * )
      */
+
     public function register(Request $request)
     {
         // Validate incoming request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',  // Added password confirmation validation
+            'password' => 'required|string|min:6',
             'linkedin_id' => 'nullable|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // Added avatar validation
         ]);
 
         // If validation fails, return validation errors
@@ -75,12 +79,19 @@ class UserController extends Controller
         }
 
         try {
+            // If avatar is provided, handle file upload
+            $avatarPath = null;
+            if ($request->hasFile('avatar')) {
+                $avatarPath = $request->file('avatar')->store('avatars', 'public');  // Save the avatar in the 'public/avatars' directory
+            }
+
             // Create a new user
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'linkedin_id' => $request->linkedin_id,
+                'avatar' => $avatarPath,  // Save avatar path or URL
             ]);
 
             // Generate JWT token after user registration
@@ -99,6 +110,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+
     /**
      * @OA\Get(
      *     path="/api/getUser/{id}",

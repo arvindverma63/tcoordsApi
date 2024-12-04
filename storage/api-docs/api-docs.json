@@ -41,6 +41,11 @@
                                     "linkedin_id": {
                                         "type": "string",
                                         "example": "linkedin-profile-id"
+                                    },
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "example": "http://example.com/path-to-avatar.jpg"
                                     }
                                 },
                                 "type": "object"
@@ -62,6 +67,10 @@
                                         "email": {
                                             "type": "string",
                                             "example": "john@example.com"
+                                        },
+                                        "avatar": {
+                                            "type": "string",
+                                            "example": "http://example.com/path-to-avatar.jpg"
                                         }
                                     },
                                     "type": "object"
