@@ -67,7 +67,7 @@ class UserController extends Controller
         // Validate incoming request
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'email|unique:users,email',
             'password' => 'required|string|min:6',
             'linkedin_id' => 'nullable|string|max:255',
             'avatar' => 'nullable',  // Added avatar validation
