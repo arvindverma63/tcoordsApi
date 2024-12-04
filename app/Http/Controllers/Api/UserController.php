@@ -158,4 +158,44 @@ class UserController extends Controller
             ], 404);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/profile/{id}",
+     *     summary="Get user profile by LinkedIn ID",
+     *     description="Fetch the user profile details using their LinkedIn ID.",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", description="LinkedIn ID of the user")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User profile data",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer", description="User ID"),
+     *             @OA\Property(property="linkedin_id", type="string", description="LinkedIn ID of the user"),
+     *             @OA\Property(property="name", type="string", description="User's name"),
+     *             @OA\Property(property="email", type="string", description="User's email"),
+     *
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *     ),
+     * )
+     */
+    public function getProfile($id)
+    {
+        $data = User::where('linkedin_id', $id)->first();
+        if ($data) {
+            return response()->json($data);
+        }
+
+        return response()->json(['message' => 'User not found'], 404);
+    }
 }

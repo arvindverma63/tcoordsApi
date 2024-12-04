@@ -17,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::get('/getUser/{id}',[UserController::class,'getUser']);
+Route::middleware(['auth:api'])->group(function () {
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/profile/{id}',[UserController::class,'getProfile']);
+    });
+});

@@ -181,6 +181,60 @@
                     }
                 }
             }
+        },
+        "/api/profile/{id}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get user profile by LinkedIn ID",
+                "description": "Fetch the user profile details using their LinkedIn ID.",
+                "operationId": "da6b7110a90d54f36798bc1d42aebb92",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "description": "LinkedIn ID of the user",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "description": "User ID",
+                                            "type": "integer"
+                                        },
+                                        "linkedin_id": {
+                                            "description": "LinkedIn ID of the user",
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "description": "User's name",
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "description": "User's email",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
         }
     },
     "components": {
